@@ -29,7 +29,7 @@ npm-debug.log*
 .env.local
 .env.*.local
 
-# Tauri build artifacts
+# Tauri build artifacts (except releases folder)
 *.deb
 *.AppImage
 *.rpm
@@ -37,6 +37,7 @@ npm-debug.log*
 *.msi
 *.exe
 *.app
+!releases/**
 
 # Ignore all markdown files except README.md
 *.md
