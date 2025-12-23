@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>USB Writer by Kognit Labs</title>
+  <link rel="stylesheet" href="/src/styles.css" />
+</head>
+<body>
+  <div id="app">
+    <!-- Header -->
+    <header class="header">
+      <div class="header-left">
+        <img src="/logo_full.png" alt="USB Writer" class="app-logo-full" />
+      </div>
+      <div class="header-right">
+        <img src="/kognitlabs_logo.png" alt="Kognit Labs" class="company-logo" />
+      </div>
+    </header>
+
+    <!-- Step Indicator -->
+    <div class="step-indicators">
+      <div class="step-dot active" data-step="1">
+        <span class="step-number">1</span>
+        <span class="step-label">Select ISO</span>
+      </div>
+      <div class="step-line"></div>
+      <div class="step-dot" data-step="2">
+        <span class="step-number">2</span>
+        <span class="step-label">Select USB</span>
+      </div>
+      <div class="step-line"></div>
+      <div class="step-dot" data-step="3">
+        <span class="step-number">3</span>
+        <span class="step-label">Create USB</span>
+      </div>
+    </div>
+
+    <!-- Main Content - Wizard Steps -->
+    <main class="main-content">
+
+      <!-- Step 1: Select ISO -->
+      <section class="wizard-step active" id="step-1">
+        <div class="step-content">
+          <div class="step-header">
+            <img src="/icons/iso_file.png" alt="ISO" class="step-icon" />
+            <div>
+              <h2>Select ISO File</h2>
+              <p class="step-description">Choose Windows, Linux, or other OS ISO to create a bootable USB</p>
+            </div>
+          </div>
+
+          <div class="file-selector" id="iso-selector">
+            <div class="file-drop-zone" id="iso-drop-zone">
+              <div class="drop-icon-container">
+                <img src="/icons/folder.png" alt="Browse" class="drop-icon" />
+              </div>
+              <p class="drop-text">Drag & drop ISO file here</p>
+              <p class="drop-subtext">or click to browse</p>
+            </div>
+          </div>
+
+          <div class="file-info hidden" id="iso-info">
+            <div class="file-info-icon">
+              <img src="/icons/cd.png" alt="ISO" />
+            </div>
+            <div class="file-info-details">
+              <p class="file-name" id="iso-name">--</p>
+              <p class="file-meta">
+                <span id="iso-size">--</span>
+                <span class="separator">|</span>
+                <span id="iso-version" class="badge">--</span>
+              </p>
+            </div>
+            <button class="btn-icon" id="iso-remove" title="Remove">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <div class="step-actions">
+          <div></div>
+          <button class="btn btn-primary" id="btn-next-1" disabled>
+            <span>Continue</span>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M9 18l6-6-6-6"/>
+            </svg>
+          </button>
+        </div>
+      </section>
+
+      <!-- Step 2: Select USB Drive -->
+      <section class="wizard-step" id="step-2">
+        <div class="step-content">
+          <div class="step-header">
+            <img src="/icons/usb.png" alt="USB" class="step-icon" />
+            <div>
+              <h2>Select USB Drive</h2>
+              <p class="step-description">Choose target USB drive (minimum 8GB required)</p>
+            </div>
+            <button class="btn-icon refresh-btn" id="refresh-drives" title="Refresh drives">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M23 4v6h-6"></path>
+                <path d="M1 20v-6h6"></path>
+                <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+              </svg>
+            </button>
+          </div>
+
+          <div class="drive-list" id="drive-list">
+            <div class="empty-state" id="no-drives">
+              <img src="/icons/usb.png" alt="USB" class="empty-icon" />
+              <p>No USB drives detected</p>
+              <p class="empty-subtext">Insert a USB drive and click refresh</p>
+            </div>
+          </div>
+
+          <div class="warning-box">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+              <line x1="12" y1="9" x2="12" y2="13"></line>
+              <line x1="12" y1="17" x2="12.01" y2="17"></line>
+            </svg>
+            <span>All data on the selected USB drive will be permanently erased</span>
+          </div>
+        </div>
+
+        <div class="step-actions">
+          <button class="btn btn-secondary" id="btn-back-2">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M15 18l-6-6 6-6"/>
+            </svg>
+            <span>Back</span>
+          </button>
+          <button class="btn btn-primary" id="btn-next-2" disabled>
+            <span>Continue</span>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M9 18l6-6-6-6"/>
+            </svg>
+          </button>
+        </div>
+      </section>
+
+      <!-- Step 3: Create Bootable USB -->
+      <section class="wizard-step" id="step-3">
+        <div class="step-content">
+          <div class="step-header">
+            <img src="/icons/flash.png" alt="Flash" class="step-icon" />
+            <div>
+              <h2>Create Bootable USB</h2>
+              <p class="step-description">Review your selections and start the process</p>
+            </div>
+          </div>
+
+          <!-- Summary -->
+          <div class="summary-section" id="summary-section">
+            <div class="summary-item">
+              <div class="summary-icon">
+                <img src="/icons/cd.png" alt="ISO" />
+              </div>
+              <div class="summary-details">
+                <span class="summary-label">Source ISO</span>
+                <span class="summary-value" id="summary-iso">--</span>
+              </div>
+            </div>
+            <div class="summary-arrow">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M5 12h14M12 5l7 7-7 7"/>
+              </svg>
+            </div>
+            <div class="summary-item">
+              <div class="summary-icon">
+                <img src="/icons/usb.png" alt="USB" />
+              </div>
+              <div class="summary-details">
+                <span class="summary-label">Target USB</span>
+                <span class="summary-value" id="summary-usb">--</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Options -->
+          <div class="options-section">
+            <label class="checkbox-label">
+              <input type="checkbox" id="opt-gpt" checked />
+              <span class="checkmark"></span>
+              <span>GPT partition scheme (UEFI boot)</span>
+            </label>
+            <label class="checkbox-label">
+              <input type="checkbox" id="opt-split" checked />
+              <span class="checkmark"></span>
+              <span>Split large files for FAT32 compatibility</span>
+            </label>
+          </div>
+
+          <!-- Progress Section (hidden by default) -->
+          <div class="progress-section hidden" id="progress-section">
+            <div class="progress-header">
+              <span class="progress-stage" id="progress-stage">Preparing...</span>
+              <span class="progress-percent" id="progress-percent">0%</span>
+            </div>
+            <div class="progress-bar-container">
+              <div class="progress-bar" id="progress-bar"></div>
+            </div>
+            <div class="progress-details">
+              <div class="progress-stat">
+                <span class="stat-label">Current file</span>
+                <span class="stat-value" id="current-file">--</span>
+              </div>
+              <div class="progress-stat">
+                <span class="stat-label">Speed</span>
+                <span class="stat-value" id="write-speed">--</span>
+              </div>
+              <div class="progress-stat">
+                <span class="stat-label">ETA</span>
+                <span class="stat-value" id="write-eta">--</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Success Message (hidden by default) -->
+          <div class="success-message hidden" id="success-message">
+            <img src="/icons/checkmark.png" alt="Success" class="success-icon" />
+            <div class="success-text">
+              <h3>USB Drive Ready!</h3>
+              <p>Your bootable USB has been created successfully.</p>
+            </div>
+          </div>
+
+          <!-- Error Message (hidden by default) -->
+          <div class="error-message hidden" id="error-message">
+            <img src="/icons/error.png" alt="Error" class="error-icon" />
+            <div class="error-text">
+              <h3>Error</h3>
+              <p id="error-text">An error occurred during the write process.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="step-actions">
+          <button class="btn btn-secondary" id="btn-back-3">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M15 18l-6-6 6-6"/>
+            </svg>
+            <span>Back</span>
+          </button>
+          <button class="btn btn-primary btn-write" id="btn-write">
+            <img src="/icons/flash.png" alt="" class="btn-icon-img" />
+            <span>Write to USB</span>
+          </button>
+          <button class="btn btn-danger hidden" id="btn-cancel">
+            <span>Cancel</span>
+          </button>
+          <button class="btn btn-primary hidden" id="btn-done">
+            <span>Done</span>
+          </button>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <span>USB Writer v1.0.0</span>
+      <span class="footer-brand">Kognit Labs</span>
+    </footer>
+  </div>
+
+  <script type="module" src="/src/main.js"></script>
+</body>
+</html>
