@@ -70,6 +70,13 @@
       "webviewInstallMode": {
         "type": "embedBootstrapper",
         "silent": true
+      },
+      "nsis": {
+        "oneClick": true,
+        "perMachine": false,
+        "allowElevation": true,
+        "installerIcon": "icons/icon.ico",
+        "displayLanguageSelector": false
       }
     }
   },

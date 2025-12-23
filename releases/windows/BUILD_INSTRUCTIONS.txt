@@ -1,0 +1,85 @@
+Kognit USB Writer - Windows Build Instructions
+==============================================
+
+To build the Windows installer (.exe single-file), run the following on Windows:
+
+PREREQUISITES
+=============
+1. Install Rust:
+   - Download from: https://rustup.rs
+   - Run rustup-init.exe and follow prompts
+   - Restart terminal after installation
+
+2. Install Node.js (v18+):
+   - Download from: https://nodejs.org
+   - Use the LTS version
+
+3. Install Visual Studio Build Tools:
+   - Download from: https://visualstudio.microsoft.com/visual-cpp-build-tools/
+   - Select "Desktop development with C++" workload
+
+4. Install Tauri CLI (globally):
+   cargo install tauri-cli
+
+
+BUILD STEPS
+===========
+1. Clone the repository:
+   git clone https://github.com/Patthebunny73/USB_Writer.git
+   cd USB_Writer
+
+2. Install frontend dependencies:
+   cd ui
+   npm install
+
+3. Build the application:
+   cd ../src-tauri
+   cargo tauri build
+
+4. After build completes, the installer will be at:
+   src-tauri\target\release\bundle\nsis\Kognit USB Writer_1.0.0_x64-setup.exe
+
+   The standalone executable (without installer) will be at:
+   src-tauri\target\release\kognit-usb-writer.exe
+
+
+OUTPUT FILES
+============
+- Kognit USB Writer_1.0.0_x64-setup.exe  (NSIS installer - single file, includes WebView2)
+- kognit-usb-writer.exe                   (Standalone executable)
+
+The NSIS installer:
+- Single .exe file
+- Embeds WebView2 bootstrapper
+- One-click install (no wizard)
+- Includes application icon
+- Installs to user's AppData (no admin required by default)
+- Can request elevation if needed
+
+
+COPY TO RELEASES
+================
+After building, copy to the releases folder:
+
+copy "src-tauri\target\release\bundle\nsis\Kognit USB Writer_1.0.0_x64-setup.exe" releases\windows\
+
+Then commit and push:
+git add releases\windows\
+git commit -m "Add Windows installer"
+git push origin main
+
+
+CODE SIGNING (Optional)
+=======================
+For trusted distribution without Windows SmartScreen warnings:
+
+1. Purchase a code signing certificate from:
+   - DigiCert, Sectigo, GlobalSign, etc.
+   - EV (Extended Validation) certificates have immediate trust
+   - Standard OV certificates build trust over time
+
+2. Sign the executable:
+   signtool sign /f certificate.pfx /p password /tr http://timestamp.digicert.com /td sha256 /fd sha256 "Kognit USB Writer_1.0.0_x64-setup.exe"
+
+Without signing, users will see SmartScreen warning on first run.
+They can click "More info" > "Run anyway" to proceed.
