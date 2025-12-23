@@ -1,7 +1,7 @@
 Kognit USB Writer - macOS Build Instructions
 =============================================
 
-To build the macOS executable, run the following on your Mac:
+To build the macOS installer (.dmg with drag-to-Applications), run the following on your Mac:
 
 1. Clone the repository:
    git clone https://github.com/Patthebunny73/USB_Writer.git
@@ -12,24 +12,95 @@ To build the macOS executable, run the following on your Mac:
    - Node.js: https://nodejs.org (v18+)
    - Xcode Command Line Tools: xcode-select --install
 
-3. Build the application:
-   ./scripts/build-macos.sh
+3. Install dependencies and build:
+   cd ui
+   npm install
+   cd ../src-tauri
+   npx tauri build
 
-4. After build completes, copy the following files to this folder:
+4. After build completes, the .dmg installer will be at:
+   src-tauri/target/release/bundle/dmg/Kognit USB Writer_1.0.0_aarch64.dmg
 
-   From: src-tauri/target/release/
-   - kognit-usb-writer (standalone executable)
+5. Copy to releases folder:
+   cp "src-tauri/target/release/bundle/dmg/Kognit USB Writer_1.0.0_aarch64.dmg" releases/macos/
 
-   From: src-tauri/target/release/bundle/dmg/
-   - Kognit USB Writer_1.0.0_aarch64.dmg (for Apple Silicon)
-   - Kognit USB Writer_1.0.0_x64.dmg (for Intel Macs)
-
-5. Commit and push:
+6. Commit and push:
    git add releases/macos/
-   git commit -m "Add macOS executables"
+   git commit -m "Add macOS installer"
    git push origin main
 
-Expected files in this folder after build:
-- kognit-usb-writer (executable)
-- kognit-usb-writer_1.0.0_aarch64.dmg (Apple Silicon)
-- kognit-usb-writer_1.0.0_x64.dmg (Intel) - if cross-compiled
+
+CODE SIGNING FOR macOS (Required for Distribution)
+==================================================
+
+To sign your app so macOS trusts it, you need an Apple Developer account:
+
+1. ENROLL IN APPLE DEVELOPER PROGRAM
+   - Go to: https://developer.apple.com/programs/
+   - Cost: $99/year (individual) or $299/year (organization)
+   - Required for distributing apps outside the Mac App Store
+
+2. CREATE CERTIFICATES (after enrollment)
+   - Open Keychain Access on your Mac
+   - Go to Apple Developer portal > Certificates, IDs & Profiles
+   - Create a "Developer ID Application" certificate
+   - Download and install it in Keychain Access
+
+3. SIGN THE APP
+   After building, sign the .app bundle:
+
+   codesign --deep --force --verify --verbose \
+     --sign "Developer ID Application: Your Name (TEAM_ID)" \
+     "src-tauri/target/release/bundle/macos/Kognit USB Writer.app"
+
+4. NOTARIZE THE APP (Required for macOS 10.15+)
+   Apple requires notarization for apps distributed outside the App Store:
+
+   # Create a zip for notarization
+   ditto -c -k --keepParent \
+     "src-tauri/target/release/bundle/macos/Kognit USB Writer.app" \
+     "KognitUSBWriter.zip"
+
+   # Submit for notarization
+   xcrun notarytool submit KognitUSBWriter.zip \
+     --apple-id "your@email.com" \
+     --team-id "YOUR_TEAM_ID" \
+     --password "app-specific-password" \
+     --wait
+
+   # Staple the notarization ticket
+   xcrun stapler staple \
+     "src-tauri/target/release/bundle/macos/Kognit USB Writer.app"
+
+5. REBUILD THE DMG
+   After signing and notarizing, rebuild the .dmg:
+
+   npx tauri build --bundles dmg
+
+
+ALTERNATIVE: Unsigned Distribution
+==================================
+If you don't want to pay for Apple Developer Program:
+
+Users can still run unsigned apps by:
+1. Right-click the app > Open (first time only)
+2. Or: System Settings > Privacy & Security > "Open Anyway"
+
+The app will show "unidentified developer" warning but will work.
+
+
+TAURI SIGNING CONFIGURATION (Optional)
+======================================
+Add to src-tauri/tauri.conf.json under "bundle" > "macOS":
+
+"macOS": {
+  "minimumSystemVersion": "11.0",
+  "signingIdentity": "Developer ID Application: Your Name (TEAM_ID)",
+  "notarizationCredentials": {
+    "appleId": "your@email.com",
+    "teamId": "YOUR_TEAM_ID",
+    "password": "@keychain:AC_PASSWORD"
+  }
+}
+
+Then build normally and Tauri will sign/notarize automatically.
