@@ -39,7 +39,7 @@ A professional, cross-platform bootable USB creator with support for Windows 11,
 ### USB Drive Requirements
 
 - Minimum 8GB capacity for Windows ISOs
-- Minimum 4GB capacity for most Linux ISOs
+- Minimum 8GB capacity for most Linux ISOs
 - USB 3.0 recommended for faster write speeds
 
 ### Linux Dependencies
