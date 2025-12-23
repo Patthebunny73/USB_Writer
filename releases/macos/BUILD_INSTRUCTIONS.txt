@@ -1,0 +1,35 @@
+Kognit USB Writer - macOS Build Instructions
+=============================================
+
+To build the macOS executable, run the following on your Mac:
+
+1. Clone the repository:
+   git clone https://github.com/Patthebunny73/USB_Writer.git
+   cd USB_Writer
+
+2. Install prerequisites (if not already installed):
+   - Rust: curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+   - Node.js: https://nodejs.org (v18+)
+   - Xcode Command Line Tools: xcode-select --install
+
+3. Build the application:
+   ./scripts/build-macos.sh
+
+4. After build completes, copy the following files to this folder:
+
+   From: src-tauri/target/release/
+   - kognit-usb-writer (standalone executable)
+
+   From: src-tauri/target/release/bundle/dmg/
+   - Kognit USB Writer_1.0.0_aarch64.dmg (for Apple Silicon)
+   - Kognit USB Writer_1.0.0_x64.dmg (for Intel Macs)
+
+5. Commit and push:
+   git add releases/macos/
+   git commit -m "Add macOS executables"
+   git push origin main
+
+Expected files in this folder after build:
+- kognit-usb-writer (executable)
+- kognit-usb-writer_1.0.0_aarch64.dmg (Apple Silicon)
+- kognit-usb-writer_1.0.0_x64.dmg (Intel) - if cross-compiled
